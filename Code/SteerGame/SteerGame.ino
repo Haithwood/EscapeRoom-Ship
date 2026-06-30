@@ -1,3 +1,6 @@
+// timer for doing everything
+// 4 Right / 9 Left / 11 Right / 5 Left ??? OH ALSTERNATIVELY DECIDING POINTS EVERY X NUMBER
+
 #include <Arduino.h>
 #include <Encoder.h>
 #include <FastLED.h>
@@ -15,7 +18,8 @@ bool visited[NUM_LEDS] = { false };
 const int STEP_SIZE = 600;
 static long lastDir = -1;
 int direction = 0;
-int target = 0;
+int greenTarget = 0;
+int redTarget = 0;
 int score = 0;
 
 int state = 0;
@@ -28,17 +32,25 @@ bool allVisited() {
   return true;
 }
 
-void pick_target() {
-  target = random(0, 7);
-  if (target == direction) {
-    target = (direction + 3) % 8;
+void pick_green_target() {
+  greenTarget = random(0, 7);
+  if (greenTarget == direction || greenTarget == redTarget) {
+    greenTarget = (direction + 3) % 8;
+  }
+}
+
+void pick_red_target() {
+  redTarget = random(0, 7);
+  if (redTarget == direction || redTarget == greenTarget) {
+    redTarget = (direction + 3) % 8;
   }
 }
 
 void update_leds() {
   FastLED.clear();
   leds[direction] = CRGB::Blue;
-  leds[target] = CRGB::Green;
+  leds[redTarget] = CRGB::Red;
+  leds[greenTarget] = CRGB::Green;
   FastLED.show();
 }
 
@@ -76,12 +88,23 @@ void loop() {
   if (state == 1) {
     // Movement update
     if (direction != lastDir) {
-      // Serial.println(DIRECTION[direction]);
       lastDir = direction;
 
+
+      if (direction == redTarget) {
+        digitalWrite(score, LOW);
+        pick_red_target();
+        score--;
+        if (score <= 0) {
+          score = 0;
+        }
+        digitalWrite(score, HIGH);
+      }
+
       // Success condition
-      if (direction == target) {
-        pick_target();
+      if (direction == greenTarget) {
+        pick_green_target();
+        pick_red_target();
         score++;
 
         if (score >= 31) {
@@ -90,9 +113,9 @@ void loop() {
         }
 
         digitalWrite(score, HIGH);
-
-        // Serial.println(score);
       }
+
+
 
       update_leds();
     }
@@ -113,6 +136,5 @@ void loop() {
       digitalWrite(i, HIGH);
       delay(50);
     }
-  
   }
 }
