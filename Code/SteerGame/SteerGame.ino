@@ -1,12 +1,9 @@
-// timer for doing everything
-// 4 Right / 9 Left / 11 Right / 5 Left ??? OH ALSTERNATIVELY DECIDING POINTS EVERY X NUMBER
-
 #include <Arduino.h>
 #include <Encoder.h>
 #include <FastLED.h>
 
-// 52 = green / 53 = white
-Encoder myEnc(52, 53);
+// 2 = green / 3 = white
+Encoder myEnc(2, 3);
 
 #define NUM_LEDS 8
 #define DATA_PIN 39
@@ -48,7 +45,7 @@ void pick_red_target() {
 
 void update_leds() {
   FastLED.clear();
-  leds[direction] = CRGB::Blue;
+  leds[direction] = CRGB::White;
   leds[redTarget] = CRGB::Red;
   leds[greenTarget] = CRGB::Green;
   FastLED.show();
