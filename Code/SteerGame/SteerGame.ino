@@ -17,9 +17,11 @@ static long lastDir = -1;
 int direction = 0;
 int greenTarget = 0;
 int redTarget = 0;
-int score = 0;
+int score = 3;
 
 int state = 0;
+
+int maglockPin = 38;
 
 // function that returns T/F depending on the visit status of the compass LEDs.
 bool allVisited() {
@@ -58,7 +60,10 @@ void setup() {
   FastLED.clear();
   FastLED.show();
 
-  for (int i = 1; i < 32; i++) {
+  pinMode(maglockPin, OUTPUT);
+  digitalWrite(maglockPin, LOW);
+
+  for (int i = 4; i < 34; i++) {
     pinMode(i, OUTPUT);
   }
 
@@ -92,8 +97,8 @@ void loop() {
         digitalWrite(score, LOW);
         pick_red_target();
         score--;
-        if (score <= 0) {
-          score = 0;
+        if (score <= 3) {
+          score = 3;
         }
         digitalWrite(score, HIGH);
       }
@@ -104,11 +109,10 @@ void loop() {
         pick_red_target();
         score++;
 
-        if (score >= 31) {
-          score = 31;
+        if (score >= 34) {
+          score = 34;
           state++;
         }
-
         digitalWrite(score, HIGH);
       }
 
@@ -121,17 +125,21 @@ void loop() {
     FastLED.clear();
     FastLED.show();
 
+    digitalWrite(maglockPin, HIGH);
+
     // clear map path
-    for (int i = 1; i < 32; i++) {
+    for (int i = 4; i < 34; i++) {
       digitalWrite(i, LOW);
       delay(50);
     }
     delay(500);
 
     // light up map path
-    for (int i = 1; i < 32; i++) {
+    for (int i = 4; i < 34; i++) {
       digitalWrite(i, HIGH);
       delay(50);
     }
+
+
   }
 }
