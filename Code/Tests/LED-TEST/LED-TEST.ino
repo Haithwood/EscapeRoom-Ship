@@ -17,7 +17,7 @@ void setup() {
   FastLED.clear();
   FastLED.show();
 
-  for (int i = 1; i < 32; i++) {
+  for (int i = 4; i < 34; i++) {
     pinMode(i, OUTPUT);
   }
 }
@@ -26,24 +26,26 @@ void loop() {
   // order for the Compass LEDs to flash
   int order[] = { 2, 3, 4, 5, 6, 7, 0, 1, 2 };
 
+
+  // light up map path
+  for (int i = 4; i < 34; i++) {
+    digitalWrite(i, HIGH);
+    delay(50);
+  }
+
   // Flashing compass lights
   for (int i = 0; i < 9; i++) {
     leds[order[i]] = CRGB::Blue;
     FastLED.show();
     delay(200);
-    FastLED.clear();
-    FastLED.show();
-    delay(200);
+    // FastLED.clear();
+    // FastLED.show();
+    // delay(200);
   }
+  delay(10000);
 
-  // light up map path
-  for (int i = 1; i < 32; i++) {
-    digitalWrite(i, HIGH);
-    delay(50);
-  }
-  delay(1000);
   // clear map path
-  for (int i = 1; i < 32; i++) {
+  for (int i = 4; i < 24; i++) {
     digitalWrite(i, LOW);
     delay(50);
   }
